@@ -44,14 +44,12 @@ test ('The ecliptical longitude of the sun as seen from Earth is 12.0322 degrees
 // 6. The Equatorial Coordinates
 test ('The right ascension of the sun on JD 2453097 is 11.0649 degrees', () => {
     const eclipticalLongitudeSun = 12.0322; // Lambda sun
-    const obliquity = 23.4393; // Obliquity of the sun (little epsilon)
-    expect(RightAscensionSun(eclipticalLongitudeSun, obliquity)).toBeCloseTo(11.0649, 4);
+    expect(RightAscensionSun(eclipticalLongitudeSun)).toBeCloseTo(11.0649, 4);
 });
 
 test ('The declination of the sun on JD 2453097 is 4.7565 degrees', () => {
     const eclipticalLongitudeSun = 12.0322; // Lambda sun
-    const obliquity = 23.4393; // Obliquity of the sun (little epsilon)
-    expect(DeclinationSun(eclipticalLongitudeSun, obliquity)).toBeCloseTo(4.7565, 4);
+    expect(DeclinationSun(eclipticalLongitudeSun)).toBeCloseTo(4.7565, 4);
 });
 
 // 7. The Observer
