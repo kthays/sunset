@@ -68,7 +68,9 @@ function MeanLongitude(meanAnomaly) {
 }
 
 // If you look at the Sun from the planet, then you're looking in the opposite direction (L sun)
-function MeanLongitudeSun(meanLongitude) {
+function MeanLongitudeSun(JD) {
+    const meanAnomaly = MeanAnomaly(JD);
+    const meanLongitude = MeanLongitude(meanAnomaly);
     return meanLongitude + 180;
 }
 
@@ -79,4 +81,4 @@ function ElipticalLongitudeSun(meanLongitudeSun, center) {
 
 // #endregion
 
-module.exports = { DateToJulian, DateFromJulian, MeanAnomaly, TrueAnomaly, ElipticalLongitudeSun };
+module.exports = { DateToJulian, DateFromJulian, MeanAnomaly, TrueAnomaly, MeanLongitudeSun, ElipticalLongitudeSun };
