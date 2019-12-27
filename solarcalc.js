@@ -133,6 +133,46 @@ function Altitude(hourAngle, latitude, declination) {
 
 // #endregion
 
+// #region 8. Solar Transit
+// https://www.aa.quae.nl/en/reken/zonpositie.html#8
+
+function SolarTransit(JD, longitude) {
+    const J2k = 2451545;
+    const nx = (JD - J2k - 0.0009) - (longitude / 360);
+    const n = Math.round(nx);
+
+    // Calculate estimate for date and time of the transit near JD
+    const Jx = JD + (n - nx);
+
+    // Calculate mean anomaly (M) and mean elliptical longitude (LSun) for Jx
+    const meanAnomalyRads = getRadians(MeanAnomaly(Jx)); // M
+    const meanEllipticalSunRads = getRadians(MeanLongitudeSun(Jx) % 360); // LSun
+    
+    // Estimate the transit time
+    let Jtransit = Jx + (0.0053 * Math.sin(meanAnomalyRads)) + (-0.0068 * Math.sin(2 * meanEllipticalSunRads));
+
+    // Improve accuracy - calculate the hour angle (H) of the sun during transit
+    const precision = 0.0001; // We'll stop improving our estimate once the new value varies by less than this value
+    const maxIterations = 10; // Avoid infinite loop, in case our calculations don't converge
+    for (let i = 0; i < maxIterations; i++) {
+        const sidereal = SiderealTime(Jtransit, longitude);
+        const eclipticalLongitudeSun = ElipticalLongitudeSun(MeanLongitudeSun(Jtransit), TrueAnomaly(MeanAnomaly(Jtransit)));
+        const rightAscension = RightAscensionSun(eclipticalLongitudeSun);
+        const JtransitNew = Jtransit - (HourAngle(sidereal, rightAscension) / 360);
+
+        // Was our accuracy improvement significant? If not, we're done.
+        const iterationImprovement = Jtransit - JtransitNew;
+        if (iterationImprovement <= precision) break;
+
+        // Update our estimate and revise our estimation
+        Jtransit = JtransitNew;
+    }
+
+    return Jtransit;
+}
+
+// #endregion
+
 module.exports = { 
     DateToJulian,
     DateFromJulian,
@@ -146,4 +186,5 @@ module.exports = {
     HourAngle,
     Azimuth,
     Altitude,
+    SolarTransit,
 };

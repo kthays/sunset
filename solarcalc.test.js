@@ -11,6 +11,7 @@ const {
     HourAngle,
     Azimuth,
     Altitude,
+    SolarTransit,
 } = require('./solarcalc');
 
 // 1. Time
@@ -67,4 +68,9 @@ test ('Azimuth of the sun in the Netherlands on JD 2453097 is 5.1111 degrees', (
 
 test ('Altitude of the sun in the Netherlands on JD 2453097 is 42.6530 degrees', () => {
     expect(Altitude(3.7698, 52, 4.7565)).toBeCloseTo(42.6530, 4);
+});
+
+// 8. Solar Transit
+test ('Solar transit in the Netherlands near JD 2453097 is 2453096.9895', () => {
+    expect(SolarTransit(2453097, -5)).toBeCloseTo(2453096.9895, 4);
 });
