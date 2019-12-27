@@ -51,4 +51,12 @@ function TrueAnomaly(meanAnomaly) {
 
 // #endregion
 
+// #region 4. The Perihelion and the Obliquity of the Ecliptic
+// https://www.aa.quae.nl/en/reken/zonpositie.html#4
+
+const perihelion = 102.9373; // Capital PI (degrees)
+const obliquity = 23.4393; // Epsilon (degrees)
+
+// #endregion
+
 module.exports = { DateToJulian, DateFromJulian, MeanAnomaly, TrueAnomaly };
