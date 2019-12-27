@@ -19,4 +19,14 @@ function DateFromJulian(dateJulian, timezoneOffsetMinutes) {
 
 // #endregion Time
 
-module.exports = { DateToJulian, DateFromJulian };
+// #region 2. Mean Anomaly
+// https://www.aa.quae.nl/en/reken/zonpositie.html#2
+
+function MeanAnomaly(JD) {
+    const J2k = 2451545;
+    return (357.5291 + (0.98560028 * (JD - J2k))) % 360;
+}
+// #endregion
+
+
+module.exports = { DateToJulian, DateFromJulian, MeanAnomaly };
