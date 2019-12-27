@@ -22,11 +22,33 @@ function DateFromJulian(dateJulian, timezoneOffsetMinutes) {
 // #region 2. Mean Anomaly
 // https://www.aa.quae.nl/en/reken/zonpositie.html#2
 
+// Returns the mean anomaly in degrees
 function MeanAnomaly(JD) {
     const J2k = 2451545;
     return (357.5291 + (0.98560028 * (JD - J2k))) % 360;
 }
 // #endregion
 
+// #region 3. The Equation of Center
+// https://www.aa.quae.nl/en/reken/zonpositie.html#3
 
-module.exports = { DateToJulian, DateFromJulian, MeanAnomaly };
+function getRadians(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function getDegrees(radians) {
+    return radians * (180 / Math.PI);
+}
+
+// The true anomaly is the angular distance of the planet from the perihelion of the planet, as seen from the Sun.
+function TrueAnomaly(meanAnomaly) {
+    const mRads = getRadians(meanAnomaly);
+    const c1Rads = getRadians(1.9148);
+    const c2Rads = getRadians(0.0200);
+    const c3Rads = getRadians(0.0003);
+    return getDegrees((c1Rads * Math.sin(mRads)) + (c2Rads * Math.sin(2 * mRads)) + (c3Rads * Math.sin(3 * mRads)));
+}
+
+// #endregion
+
+module.exports = { DateToJulian, DateFromJulian, MeanAnomaly, TrueAnomaly };
