@@ -101,6 +101,38 @@ function DeclinationSun(eclipticalLongitudeSun) {
 
 // #endregion
 
+// #region 7. The Observer
+// https://www.aa.quae.nl/en/reken/zonpositie.html#7
+
+// The sidereal time is the right ascension that is on the celestial meridian at that moment (theta)
+function SiderealTime(JD, longitude) {
+    const J2k = 2451545;
+    return (280.1470 + (360.9856235 * (JD - J2k)) - longitude) % 360;
+}
+
+// Hour angle, indicates how long ago (in sidereal time) the sun passed through the celestial meridian (H)
+function HourAngle(siderealTime, rightAscension) {
+    return siderealTime - rightAscension;
+}
+
+// Azimuth is the direction along the horizon used to position the sun in the sky (A)
+function Azimuth(hourAngle, latitude, declination) {
+    const hourRads = getRadians(hourAngle);
+    const latRads = getRadians(latitude);
+    const declRads = getRadians(declination);
+    return getDegrees(Math.atan2(Math.sin(hourRads), (Math.cos(hourRads) * Math.sin(latRads)) - (Math.tan(declRads) * Math.cos(latRads))));
+}
+
+// Altitude is the position of the sun in the sky above the horizon
+function Altitude(hourAngle, latitude, declination) {
+    const hourRads = getRadians(hourAngle);
+    const latRads = getRadians(latitude);
+    const declRads = getRadians(declination);
+    return getDegrees(Math.asin((Math.sin(latRads) * Math.sin(declRads)) + (Math.cos(latRads) * Math.cos(declRads) * Math.cos(hourRads))));
+}
+
+// #endregion
+
 module.exports = { 
     DateToJulian,
     DateFromJulian,
@@ -110,4 +142,8 @@ module.exports = {
     ElipticalLongitudeSun,
     RightAscensionSun,
     DeclinationSun,
+    SiderealTime,
+    HourAngle,
+    Azimuth,
+    Altitude,
 };

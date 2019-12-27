@@ -7,6 +7,10 @@ const {
     ElipticalLongitudeSun,
     RightAscensionSun,
     DeclinationSun,
+    SiderealTime,
+    HourAngle,
+    Azimuth,
+    Altitude,
 } = require('./solarcalc');
 
 // 1. Time
@@ -48,4 +52,21 @@ test ('The declination of the sun on JD 2453097 is 4.7565 degrees', () => {
     const eclipticalLongitudeSun = 12.0322; // Lambda sun
     const obliquity = 23.4393; // Obliquity of the sun (little epsilon)
     expect(DeclinationSun(eclipticalLongitudeSun, obliquity)).toBeCloseTo(4.7565, 4);
+});
+
+// 7. The Observer
+test ('Sidereal time in the Netherlands on JD 2453097 is 14.8347 degrees', () => {
+    expect(SiderealTime(2453097, -5)).toBeCloseTo(14.8347, 4);
+});
+
+test ('Hour angle for the Netherlands on JD 2453097 is 3.7698 degrees', () => {
+    expect(HourAngle(14.8347, 11.0649)).toBeCloseTo(3.7698, 4);
+});
+
+test ('Azimuth of the sun in the Netherlands on JD 2453097 is 5.1111 degrees', () => {
+    expect(Azimuth(3.7698, 52, 4.7565)).toBeCloseTo(5.1111, 4);
+});
+
+test ('Altitude of the sun in the Netherlands on JD 2453097 is 42.6530 degrees', () => {
+    expect(Altitude(3.7698, 52, 4.7565)).toBeCloseTo(42.6530, 4);
 });
