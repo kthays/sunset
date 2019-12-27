@@ -81,4 +81,33 @@ function ElipticalLongitudeSun(meanLongitudeSun, center) {
 
 // #endregion
 
-module.exports = { DateToJulian, DateFromJulian, MeanAnomaly, TrueAnomaly, MeanLongitudeSun, ElipticalLongitudeSun };
+// #region 6. The Equatorial Coordinates
+// https://www.aa.quae.nl/en/reken/zonpositie.html#6
+
+// The right ascension determines when the object is visible (alpha) 
+function RightAscensionSun(eclipticalLongitudeSun) {
+    const sunRads = getRadians(eclipticalLongitudeSun); // Lambda Sun
+    const obliquityRads = getRadians(23.4393); // Little epsilon
+    return getDegrees(Math.atan2(Math.sin(sunRads) * Math.cos(obliquityRads), Math.cos(sunRads)));
+}
+
+// The declination determines from which parts of the planet the object can be visible (little delta)
+function DeclinationSun(eclipticalLongitudeSun) {
+    const sunRads = getRadians(eclipticalLongitudeSun); // Lambda Sun
+    const obliquityRads = getRadians(23.4393); // Little epsilon
+    return getDegrees(Math.asin(Math.sin(sunRads) * Math.sin(obliquityRads)));
+
+}
+
+// #endregion
+
+module.exports = { 
+    DateToJulian,
+    DateFromJulian,
+    MeanAnomaly,
+    TrueAnomaly,
+    MeanLongitudeSun,
+    ElipticalLongitudeSun,
+    RightAscensionSun,
+    DeclinationSun,
+};
