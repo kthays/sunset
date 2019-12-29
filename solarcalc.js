@@ -99,7 +99,6 @@ function DeclinationSun(eclipticalLongitudeSun) {
     const sunRads = getRadians(eclipticalLongitudeSun); // Lambda Sun
     const obliquityRads = getRadians(23.4393); // Little epsilon
     return getDegrees(Math.asin(Math.sin(sunRads) * Math.sin(obliquityRads)));
-
 }
 
 // #endregion
@@ -114,7 +113,9 @@ function SiderealTime(JD, longitude) {
 }
 
 // Hour angle, indicates how long ago (in sidereal time) the sun passed through the celestial meridian (H)
-function HourAngle(siderealTime, rightAscension) {
+function HourAngle(JD, longitude) {
+    const siderealTime = SiderealTime(JD, longitude);
+    const rightAscension = RightAscensionSun(EclipticLongitude(JD));
     return siderealTime - rightAscension;
 }
 
@@ -158,10 +159,7 @@ function SolarTransit(JD, longitude) {
     const precision = 0.0001; // We'll stop improving our estimate once the new value varies by less than this value
     const maxIterations = 10; // Avoid infinite loop, in case our calculations don't converge
     for (let i = 0; i < maxIterations; i++) {
-        const sidereal = SiderealTime(Jtransit, longitude);
-        const eclipticalLongitudeSun = EclipticLongitude(Jtransit);
-        const rightAscension = RightAscensionSun(eclipticalLongitudeSun);
-        const JtransitNew = Jtransit - (HourAngle(sidereal, rightAscension) / 360);
+        const JtransitNew = Jtransit - (HourAngle(Jtransit, longitude) / 360);
 
         // Was our accuracy improvement significant? If not, we're done
         const iterationImprovement = Jtransit - JtransitNew;

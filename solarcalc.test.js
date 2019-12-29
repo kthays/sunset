@@ -57,7 +57,7 @@ test ('Sidereal time in the Netherlands on JD 2453097 is 14.8347 degrees', () =>
 });
 
 test ('Hour angle for the Netherlands on JD 2453097 is 3.7698 degrees', () => {
-    expect(HourAngle(14.8347, 11.0649)).toBeCloseTo(3.7698, 4);
+    expect(HourAngle(2453097, -5)).toBeCloseTo(3.7698, 4);
 });
 
 test ('Azimuth of the sun in the Netherlands on JD 2453097 is 5.1111 degrees', () => {
