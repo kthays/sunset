@@ -174,6 +174,47 @@ function SolarTransit(JD, longitude) {
 
 // #endregion
 
+// #region 10. Sunrise and Sunset
+// https://www.aa.quae.nl/en/reken/zonpositie.html#10
+
+function SunriseSunset(JD, latitude, longitude) {
+    const Jtransit = SolarTransit(JD, longitude);
+    const declinationSun = DeclinationSun(EclipticLongitude(Jtransit));
+
+    const latRads = getRadians(latitude);
+    const decSunRads = getRadians(declinationSun);
+
+    const num = Math.sin(latRads) * Math.sin(decSunRads);
+    const den = Math.cos(latRads) * Math.cos(decSunRads);
+    const Ht = getDegrees(Math.acos((-0.0146 - num) / den));
+
+    let Jrise = Jtransit - (Ht / 360);
+
+    // Improve accuracy - calculate the hour angle (H) of the sun during transit
+    const precision = 0.0001; // We'll stop improving our estimate once the new value varies by less than this value
+    const maxIterations = 10; // Avoid infinite loop, in case our calculations don't converge
+    for (let i = 0; i < maxIterations; i++) {
+        let Hrise = HourAngle(Jrise, longitude);
+        if (Hrise >= 180) Hrise = Hrise - 360; // Interpret values like 270 deg as -90 deg
+    
+        const decSunRise = DeclinationSun(EclipticLongitude(Jrise));
+        const decSunRiseRads = getRadians(decSunRise);
+    
+        const numRise = Math.sin(latRads) * Math.sin(decSunRiseRads);
+        const denRise = Math.cos(latRads) * Math.cos(decSunRiseRads);
+        const HtRise = getDegrees(Math.acos((-0.0146 - numRise) / denRise));
+    
+        const JDcorrection = -(Hrise + HtRise) / 360;
+        if (JDcorrection < precision) break;
+
+        Jrise = Jrise + JDcorrection;
+    }
+
+    return Jrise;
+}
+
+// #endregion
+
 module.exports = { 
     DateToJulian,
     DateFromJulian,
@@ -188,4 +229,5 @@ module.exports = {
     Azimuth,
     Altitude,
     SolarTransit,
+    SunriseSunset,
 };

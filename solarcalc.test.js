@@ -12,6 +12,7 @@ const {
     Azimuth,
     Altitude,
     SolarTransit,
+    SunriseSunset,
 } = require('./solarcalc');
 
 // 1. Time
@@ -71,4 +72,12 @@ test ('Altitude of the sun in the Netherlands on JD 2453097 is 42.6530 degrees',
 // 8. Solar Transit
 test ('Solar transit in the Netherlands near JD 2453097 is 2453096.9895', () => {
     expect(SolarTransit(2453097, -5)).toBeCloseTo(2453096.9895, 4);
+});
+
+// 10. Sunrise Sunset
+test ('Sunrise in the Netherlands on April 1, 2004 is at 5:15', () => {
+    const date = new Date('April 1, 2004 12:00:00');
+    const sunriseJD = SunriseSunset(2453097, 52, -5);
+    const sunriseTime = DateFromJulian(sunriseJD, date.getTimezoneOffset());
+    expect(sunriseTime.getHours().toString() + ':' + sunriseTime.getMinutes().toString()).toEqual('5:15');
 });
