@@ -74,9 +74,12 @@ function MeanLongitudeSun(JD) {
     return meanLongitude + 180;
 }
 
-// Ecliptical Longitude (Lambda sun) is the sun's position along the ecliptic
-function ElipticalLongitudeSun(meanLongitudeSun, center) {
-    return (meanLongitudeSun + center) % 360;
+// Ecliptic coordinates of the sun (Lambda Sun)
+function EclipticLongitude(JD) {
+    const M = MeanAnomaly(JD);
+    const PI = 102.9373;
+    const C = TrueAnomaly(M);
+    return (M + PI + C + 180) % 360;
 }
 
 // #endregion
@@ -146,21 +149,21 @@ function SolarTransit(JD, longitude) {
 
     // Calculate mean anomaly (M) and mean elliptical longitude (LSun) for Jx
     const meanAnomalyRads = getRadians(MeanAnomaly(Jx)); // M
-    const meanEllipticalSunRads = getRadians(MeanLongitudeSun(Jx) % 360); // LSun
+    const LSunRads = getRadians(MeanLongitudeSun(Jx) % 360); // LSun
     
     // Estimate the transit time
-    let Jtransit = Jx + (0.0053 * Math.sin(meanAnomalyRads)) + (-0.0068 * Math.sin(2 * meanEllipticalSunRads));
+    let Jtransit = Jx + (0.0053 * Math.sin(meanAnomalyRads)) + (-0.0068 * Math.sin(2 * LSunRads));
 
     // Improve accuracy - calculate the hour angle (H) of the sun during transit
     const precision = 0.0001; // We'll stop improving our estimate once the new value varies by less than this value
     const maxIterations = 10; // Avoid infinite loop, in case our calculations don't converge
     for (let i = 0; i < maxIterations; i++) {
         const sidereal = SiderealTime(Jtransit, longitude);
-        const eclipticalLongitudeSun = ElipticalLongitudeSun(MeanLongitudeSun(Jtransit), TrueAnomaly(MeanAnomaly(Jtransit)));
+        const eclipticalLongitudeSun = EclipticLongitude(Jtransit);
         const rightAscension = RightAscensionSun(eclipticalLongitudeSun);
         const JtransitNew = Jtransit - (HourAngle(sidereal, rightAscension) / 360);
 
-        // Was our accuracy improvement significant? If not, we're done.
+        // Was our accuracy improvement significant? If not, we're done
         const iterationImprovement = Jtransit - JtransitNew;
         if (iterationImprovement <= precision) break;
 
@@ -179,7 +182,7 @@ module.exports = {
     MeanAnomaly,
     TrueAnomaly,
     MeanLongitudeSun,
-    ElipticalLongitudeSun,
+    EclipticLongitude,
     RightAscensionSun,
     DeclinationSun,
     SiderealTime,

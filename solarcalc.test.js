@@ -4,7 +4,7 @@ const {
     MeanAnomaly,
     TrueAnomaly,
     MeanLongitudeSun,
-    ElipticalLongitudeSun,
+    EclipticLongitude,
     RightAscensionSun,
     DeclinationSun,
     SiderealTime,
@@ -36,10 +36,8 @@ test ('The mean longitude of the sun is (87.1807 + 102.9373 + 180) for JD 245309
     expect(MeanLongitudeSun(2453097)).toBeCloseTo((87.1807 + 102.9373 + 180), 4);
 });
 
-test ('The ecliptical longitude of the sun as seen from Earth is 12.0322 degrees', () => {
-    const meanLongitudeSun = 87.1807 + 102.9373 + 180; // L sun
-    const center = 1.9142;
-    expect(ElipticalLongitudeSun(meanLongitudeSun, center)).toBeCloseTo(12.0322, 4);
+test ('The ecliptic longitude of the sun on JD 2453097 is 12.0322 degrees', () => {
+    expect(EclipticLongitude(2453097)).toBeCloseTo(12.0322, 4);
 });
 
 // 6. The Equatorial Coordinates
