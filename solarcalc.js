@@ -91,7 +91,9 @@ function EclipticLongitude(JD) {
 function RightAscensionSun(eclipticalLongitudeSun) {
     const sunRads = getRadians(eclipticalLongitudeSun); // Lambda Sun
     const obliquityRads = getRadians(23.4393); // Little epsilon
-    return getDegrees(Math.atan2(Math.sin(sunRads) * Math.cos(obliquityRads), Math.cos(sunRads)));
+    const rightAscension = getDegrees(Math.atan2(Math.sin(sunRads) * Math.cos(obliquityRads), Math.cos(sunRads)));
+    if (rightAscension < 0) return rightAscension + 360; // Make sure we don't get a negative number
+    return rightAscension;
 }
 
 // The declination determines from which parts of the planet the object can be visible (little delta)
@@ -151,7 +153,7 @@ function SolarTransit(JD, longitude) {
     // Calculate mean anomaly (M) and mean elliptical longitude (LSun) for Jx
     const meanAnomalyRads = getRadians(MeanAnomaly(Jx)); // M
     const LSunRads = getRadians(MeanLongitudeSun(Jx) % 360); // LSun
-    
+ 
     // Estimate the transit time
     let Jtransit = Jx + (0.0053 * Math.sin(meanAnomalyRads)) + (-0.0068 * Math.sin(2 * LSunRads));
 

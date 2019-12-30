@@ -77,7 +77,14 @@ test ('Solar transit in the Netherlands near JD 2453097 is 2453096.9895', () => 
 // 10. Sunrise Sunset
 test ('Sunrise in the Netherlands on April 1, 2004 is at 5:15', () => {
     const date = new Date('April 1, 2004 12:00:00');
-    const sunriseJD = SunriseSunset(2453097, 52, -5);
+    const sunriseJD = SunriseSunset(DateToJulian(date), 52, -5);
     const sunriseTime = DateFromJulian(sunriseJD, date.getTimezoneOffset());
     expect(sunriseTime.getHours().toString() + ':' + sunriseTime.getMinutes().toString()).toEqual('5:15');
+});
+
+test ('Sunrise in the Netherlands on October 1, 2004 is at 5:42', () => {
+    const date = new Date('October 1, 2004 12:00:00');
+    const sunriseJD = SunriseSunset(DateToJulian(date), 52, -5);
+    const sunriseTime = DateFromJulian(sunriseJD, date.getTimezoneOffset());
+    expect(sunriseTime.getHours().toString() + ':' + sunriseTime.getMinutes().toString()).toEqual('5:42');
 });
