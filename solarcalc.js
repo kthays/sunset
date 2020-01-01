@@ -190,6 +190,7 @@ function SunriseSunset(JD, latitude, longitude) {
     const den = Math.cos(latRads) * Math.cos(decSunRads);
     const Ht = getDegrees(Math.acos((-0.0146 - num) / den));
 
+    // Sunrise
     let Jrise = Jtransit - (Ht / 360);
 
     // Improve accuracy - calculate the hour angle (H) of the sun during transit
@@ -212,7 +213,29 @@ function SunriseSunset(JD, latitude, longitude) {
         Jrise = Jrise + JDcorrection;
     }
 
-    return Jrise;
+
+    // Sunset
+    let Jset = Jtransit + (Ht / 360);
+
+    // Improve accuracy - calculate the hour angle (H) of the sun during transit
+    for (let i = 0; i < maxIterations; i++) {
+        const Hset = HourAngle(Jset, longitude);
+        const decSunSet = DeclinationSun(EclipticLongitude(Jset));
+        const decSunSetRads = getRadians(decSunSet);
+        const numSet = Math.sin(latRads) * Math.sin(decSunSetRads);
+        const denSet = Math.cos(latRads) * Math.cos(decSunSetRads);
+        const HtSet = getDegrees(Math.acos((-0.0146 - numSet) / denSet));
+    
+        const JDcorrection = -(Hset - HtSet) / 360;
+        if (JDcorrection < precision) break;
+
+        Jset = Jset + JDcorrection;
+    }
+
+    return {
+        sunRise: Jrise,
+        sunSet: Jset,
+    };
 }
 
 // #endregion
